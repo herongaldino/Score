@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escore LeishVis</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #333; }
+    .section { margin-bottom: 20px; }
+    .result { font-weight: bold; margin-top: 20px; }
+    .low { color: green; }
+    .moderate { color: orange; }
+    .high { color: red; }
+    .very-high { color: darkred; }
+  </style>
+</head>
+<body>
+  <h1>Escore LeishVis (Escore para Leishmaniose Visceral)</h1>
+
+  <form id="leishvis-form">
+    <!-- História Clínica e Epidemiológica -->
+    <div class="section">
+      <h2>1. História Clínica e Epidemiológica</h2>
+      <label><input type="checkbox" name="epidemic" value="5"> Residência ou viagem a área endêmica (+5 pontos)</label><br>
+      <label><input type="checkbox" name="dogs" value="3"> Contato com cães infectados ou vetores (flebotomíneos) (+3 pontos)</label><br>
+      <label><input type="checkbox" name="immunosuppressed" value="4"> Estado imunossuprimido (HIV, transplante, imunossupressores) (+4 pontos)</label><br>
+    </div>
+
+    <!-- Sinais e Sintomas Clínicos -->
+    <div class="section">
+      <h2>2. Sinais e Sintomas Clínicos</h2>
+      <label><input type="checkbox" name="fever" value="6"> Febre persistente (>2 semanas) (+6 pontos)</label><br>
+      <label><input type="checkbox" name="weightLoss" value="4"> Perda de peso significativa (+4 pontos)</label><br>
+      <label><input type="checkbox" name="splenomegaly" value="8"> Esplenomegalia (+8 pontos)</label><br>
+      <label><input type="checkbox" name="hepatomegaly" value="5"> Hepatomegalia (+5 pontos)</label><br>
+      <label><input type="checkbox" name="pancytopenia" value="6"> Pancitopenia (+6 pontos)</label><br>
+    </div>
+
+    <!-- Exames Laboratoriais -->
+    <div class="section">
+      <h2>3. Exames Laboratoriais</h2>
+      <label><input type="checkbox" name="rk39" value="10"> Teste rápido rK39 positivo (+10 pontos)</label><br>
+      <label><input type="checkbox" name="pcr" value="15"> PCR para Leishmania positivo (+15 pontos)</label><br>
+      <label><input type="checkbox" name="hypoalbuminemia" value="4"> Hipoalbuminemia (<3,5 g/dL) (+4 pontos)</label><br>
+      <label><input type="checkbox" name="liverEnzymes" value="3"> Elevação de enzimas hepáticas (+3 pontos)</label><br>
+    </div>
+
+    <!-- Critérios de Exclusão -->
+    <div class="section">
+      <h2>4. Critérios de Exclusão</h2>
+      <label><input type="checkbox" name="malaria" value="-8"> Malária confirmada (-8 pontos)</label><br>
+      <label><input type="checkbox" name="infection" value="-5"> Infecção bacteriana ativa (febre tifoide, pneumonia) (-5 pontos)</label><br>
+      <label><input type="checkbox" name="lymphoma" value="-7"> Diagnóstico de linfoma confirmado (-7 pontos)</label><br>
+    </div>
+
+    <button type="button" onclick="calculateScore()">Calcular Escore</button>
+  </form>
+
+  <!-- Resultado -->
+  <div id="result" class="result"></div>
+
+  <script>
+    function calculateScore() {
+      const form = document.forms['leishvis-form'];
+      let score = 0;
+
+      // Somando os pontos dos parâmetros selecionados
+      Array.from(form.elements).forEach(input => {
+        if (input.type === 'checkbox' && input.checked) {
+          score += parseInt(input.value);
+        }
+      });
+
+      // Interpretando o resultado
+      let resultText = '';
+      let resultClass = '';
+
+      if (score <= 10) {
+        resultText = 'Baixa probabilidade de leishmaniose visceral. Recomenda-se monitoramento clínico e investigação de outras causas.';
+        resultClass = 'low';
+      } else if (score <= 20) {
+        resultText = 'Moderada probabilidade de leishmaniose visceral. Recomenda-se realizar teste rK39 e exames complementares.';
+        resultClass = 'moderate';
+      } else if (score <= 30) {
+        resultText = 'Alta probabilidade de leishmaniose visceral. Recomenda-se PCR ou biópsia, e iniciar tratamento empírico se houver risco iminente.';
+        resultClass = 'high';
+      } else {
+        resultText = 'Muito alta probabilidade de leishmaniose visceral. Tratamento imediato e notificação à vigilância epidemiológica são recomendados.';
+        resultClass = 'very-high';
+      }
+
+      // Exibindo o resultado
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = `Pontuação Total: ${score} - ${resultText}`;
+      resultDiv.className = `result ${resultClass}`;
+    }
+  </script>
+</body>
+</html>
